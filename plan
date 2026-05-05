@@ -1,0 +1,110 @@
+Customer Segmentation & Treatment Effect Analysis — Project Game Plan
+Project Overview
+This project applies unsupervised and supervised machine learning to identify customer segments and measure how a treatment variable impacts behavior across those segments. The methodology is generalizable to any A/B testing or policy change scenario where you need to identify which customer groups respond differently to an intervention.
+Timeline
+	•	Junior data scientist: 2–3 weeks
+	•	Experienced data scientist: 10–14 days
+
+Week 1 — Foundation & Exploration
+Day 1–2: Exploratory Data Analysis
+	•	Load data, inspect shape, data types, and missing values
+	•	Review distributions of key variables
+	•	Compare test vs. control groups at a high level to confirm a measurable signal exists
+	•	Document data quality issues to address before modeling
+Goal: Understand the data before committing to a modeling approach.
+Day 3–4: Feature Engineering & Selection
+	•	Engineer features from raw data (ratios, time-based aggregates, behavioral trends)
+	•	Run a quick baseline random forest to extract feature importance scores
+	•	Drop features with near-zero importance
+	•	Check for multicollinearity using Variance Inflation Factor (VIF)
+	•	Lock the test/control indicator as a forced feature for supervised modeling
+Goal: Build a clean, meaningful feature matrix.
+Day 5: Data Quality Lock
+	•	Final check for missing values, leakage, and structural issues
+	•	Confirm feature set is ready for clustering
+Goal: Enter modeling phase with clean inputs.
+
+Week 2 — Modeling
+Day 6–7: KMeans Clustering
+	•	Run KMeans without the test/control indicator to find natural customer segments
+	•	Use the elbow method and silhouette score to determine optimal number of clusters
+	•	Generate cluster profiles to characterize each segment
+Goal: Identify natural customer groupings independent of treatment exposure.
+Day 8: Decision Tree Baseline
+	•	Train a decision tree to predict cluster assignment
+	•	Include the test/control indicator as a feature
+	•	Constrain max depth (typically 5–6) to prevent overfitting
+	•	Document decision paths for interpretability
+Goal: Establish an interpretable baseline model.
+Day 9: Random Forest with Cross-Validation
+	•	Train a random forest with 100 trees
+	•	Apply 5-fold cross-validation to validate model stability
+	•	Pull feature importance and compare to decision tree results
+Goal: Improve accuracy and validate model generalizability.
+Day 10: XGBoost with Hyperparameter Tuning
+	•	Use grid search or randomized search to tune learning rate, max depth, and number of estimators
+	•	Apply 5-fold cross-validation
+	•	Compare results to random forest and decision tree
+Goal: Push accuracy to the highest level and confirm model convergence.
+
+Week 3 — Analysis & Reporting
+Day 11: Evaluation & Significance Testing
+	•	Compare key outcome metrics between test and control groups within each cluster
+	•	Apply appropriate statistical tests (chi-square, t-tests, or McNemar’s test)
+	•	Identify clusters with statistically significant treatment effects
+Goal: Connect model output to actionable insights.
+Day 12: Interpretation & Visualization
+	•	Synthesize findings across all three models
+	•	Identify which segments benefit from the treatment and which don’t
+	•	Build visualizations (cluster profiles, treatment impact charts, feature importance plots)
+Goal: Translate model output into a clear narrative.
+Day 13–14: Documentation & Handoff
+	•	Write a README covering business problem, methodology, findings, recommendations
+	•	Clean and comment code, organize by phase
+	•	Create a final summary deck for stakeholders
+	•	Provide clear next steps and limitations
+Goal: Deliver a reproducible, defensible final product.
+
+Evaluation Metrics
+Use multiple metrics together — no single metric tells the full story.
+	•	Accuracy — overall correctness; misleading on imbalanced data
+	•	ROC-AUC — model’s ability to separate classes (target above 0.8)
+	•	Precision — when the model predicts positive, how often it’s right
+	•	Recall — of all actual positives, how many the model catches
+	•	F1 Score — harmonic mean of precision and recall
+Cross-Validation
+Apply 5-fold cross-validation to all supervised models. Cross-validation:
+	•	Splits data into 5 train/test combinations
+	•	Trains and tests on each split
+	•	Averages results for a reliable performance estimate
+	•	Detects overfitting and instability
+Class Imbalance
+If a binary target is severely imbalanced, apply SMOTE to the training data only. SMOTE artificially balances training data so the model learns meaningful patterns rather than defaulting to the majority class.
+Hyperparameter Tuning
+Use grid search or randomized search with cross-validation. Key parameters:
+	•	Decision Tree: max_depth, min_samples_split
+	•	Random Forest: n_estimators, max_depth, max_features
+	•	XGBoost: learning_rate, max_depth, n_estimators, subsample
+
+Throughout the Project
+	•	Check in after each major phase (EDA, feature engineering, clustering, each model)
+	•	Challenge assumptions before presenting results
+	•	Document decisions and trade-offs as you go
+	•	Keep a retrospective list of what worked and what didn’t
+Final Deliverables
+	•	Clean, reproducible code repository
+	•	Executive summary with findings and recommendations
+	•	Technical documentation of methodology
+	•	Visualizations of segment profiles and treatment impact
+	•	Appendix with all evaluation metrics and statistical test results
+
+Key Principles
+	1.	Start simple, build complexity progressively. Decision tree → Random Forest → XGBoost.
+	2.	Interpretability vs. accuracy is a real trade-off. Use simple models to explain, complex models to validate.
+	3.	KMeans is unsupervised — no target variable. Supervised models come after.
+	4.	Cross-validation is mandatory for any supervised modeling claim.
+	5.	Multiple metrics tell the full story — never rely on accuracy alone.
+	6.	Significance testing connects models to business decisions — don’t skip it.
+	7.	Convergence across models builds confidence. When decision tree, random forest, and XGBoost agree, you have a defensible answer.
+
+That’s the full game plan, structured for reuse. Want me to tighten any section or add anything?​​​​​​​​​​​​​​​​
